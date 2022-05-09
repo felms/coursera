@@ -3,25 +3,29 @@ import edu.princeton.cs.algs4.StdStats;
 
 public class PercolationStats {
 
-    private final int n;
+    private static final double CONFIDENCE_95 = 1.96;
+
     private final int trials;
     private final double[] trialResults;
-    private Percolation percolation;
 
     // perform independent trials on an n-by-n grid
     public PercolationStats(int n, int trials) {
-        this.n = n;
+
+        if (n <= 0 || trials <= 0) {
+            throw new IllegalArgumentException("n and trials should be ints > 0");
+        }
+
         this.trials = trials;
         this.trialResults = new double[trials];
 
         for (int i = 0; i < trials; i++) {
-            this.percolation = new Percolation(n);
+            Percolation percolation = new Percolation(n);
             while (!percolation.percolates()) {
                 int row = StdRandom.uniform(1, n + 1);
                 int column = StdRandom.uniform(1, n + 1);
                 percolation.open(row, column);
             }
-            double r = (double)percolation.numberOfOpenSites() / ((double) n * n);
+            double r = (double) percolation.numberOfOpenSites() / ((double) n * n);
             this.trialResults[i] = r;
         }
 
@@ -33,7 +37,7 @@ public class PercolationStats {
     }
 
     // sample standard deviation of percolation threshold
-    public double stddev(){
+    public double stddev() {
         return StdStats.stddev(this.trialResults);
     }
 
@@ -43,7 +47,7 @@ public class PercolationStats {
         double s = this.stddev();
         double t = Math.sqrt(this.trials);
 
-        return x - ((1.96 * s) / t);
+        return x - ((CONFIDENCE_95 * s) / t);
     }
 
     // high endpoint of 95% confidence interval
@@ -52,7 +56,7 @@ public class PercolationStats {
         double s = this.stddev();
         double t = Math.sqrt(this.trials);
 
-        return x + ((1.96 * s) / t);
+        return x + ((CONFIDENCE_95 * s) / t);
     }
 
     // test client (see below)
