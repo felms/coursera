@@ -130,6 +130,11 @@ public class Deque<T> implements Iterable<T> {
 
             @Override
             public T next() {
+
+                if (!this.hasNext()) {
+                    throw  new java.util.NoSuchElementException("There's no 'next' element");
+                }
+
                 T item = current.item;
                 current = current.next;
                 return item;
