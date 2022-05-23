@@ -37,13 +37,13 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
             throw new IllegalArgumentException("Cannot add a null element.");
         }
 
-        if (this.size == this.capacity) {
-            resize(2 * this.capacity);
-        }
-
         this.items[this.size] = item;
         this.size++;
         this.tail++;
+
+        if (this.size == this.capacity) {
+            resize(2 * this.capacity);
+        }
     }
 
     // remove and return a random item
@@ -65,7 +65,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         } else if (pos == this.tail) {
             this.tail--;
         }
-        
+
         this.size--;
         if (this.size <= this.capacity / 4) {
             resize(capacity / 2);
