@@ -2,7 +2,7 @@ import edu.princeton.cs.algs4.StdOut;
 
 import java.util.Iterator;
 
-public class Deque<T> implements Iterable<T> {
+public class Deque<Item> implements Iterable<Item> {
 
     private Node head;
     private Node tail;
@@ -16,7 +16,7 @@ public class Deque<T> implements Iterable<T> {
     }
 
     private class Node {
-        T item;
+        Item item;
         Node next;
         Node previous;
     }
@@ -32,7 +32,7 @@ public class Deque<T> implements Iterable<T> {
     }
 
     // add the item to the front
-    public void addFirst(T item){
+    public void addFirst(Item item){
 
         if (item == null) {
             throw new IllegalArgumentException("Cannot add a null element.");
@@ -56,7 +56,7 @@ public class Deque<T> implements Iterable<T> {
     }
 
     // add the item to the back
-    public void addLast(T item){
+    public void addLast(Item item){
 
         if (item == null) {
             throw new IllegalArgumentException("Cannot add a null element.");
@@ -80,10 +80,10 @@ public class Deque<T> implements Iterable<T> {
     }
 
     // remove and return the item from the front
-    public T removeFirst(){
+    public Item removeFirst(){
 
         if (size > 0) {
-            T item = this.head.item;
+            Item item = this.head.item;
             this.head = this.head.next;
             size--;
 
@@ -100,9 +100,9 @@ public class Deque<T> implements Iterable<T> {
     }
 
     // remove and return the item from the back
-    public T removeLast(){
+    public Item removeLast(){
         if (size > 0) {
-            T item = this.tail.item;
+            Item item = this.tail.item;
             this.tail = this.tail.previous;
             size--;
 
@@ -119,8 +119,8 @@ public class Deque<T> implements Iterable<T> {
     }
 
     // return an iterator over items in order from front to back
-    public Iterator<T> iterator(){
-        return new Iterator<T>() {
+    public Iterator<Item> iterator(){
+        return new Iterator<Item>() {
 
             private Node current = head;
             @Override
@@ -129,13 +129,13 @@ public class Deque<T> implements Iterable<T> {
             }
 
             @Override
-            public T next() {
+            public Item next() {
 
                 if (!this.hasNext()) {
                     throw  new java.util.NoSuchElementException("There's no 'next' element");
                 }
 
-                T item = current.item;
+                Item item = current.item;
                 current = current.next;
                 return item;
             }

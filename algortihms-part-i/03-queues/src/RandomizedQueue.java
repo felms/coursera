@@ -3,9 +3,9 @@ import java.util.Iterator;
 import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.StdRandom;
 
-public class RandomizedQueue<T> implements Iterable<T> {
+public class RandomizedQueue<Item> implements Iterable<Item> {
 
-    private T[] items;
+    private Item[] items;
     private int capacity;
     private int size;
     private int head;
@@ -14,7 +14,7 @@ public class RandomizedQueue<T> implements Iterable<T> {
     // construct an empty randomized queue
     public RandomizedQueue(){
         this.capacity = 1;
-        this.items = (T[])new Object[capacity];
+        this.items = (Item[])new Object[capacity];
         this.size = 0;
         this.head = 0;
         this.tail = 0;
@@ -31,7 +31,7 @@ public class RandomizedQueue<T> implements Iterable<T> {
     }
 
     // add the item
-    public void enqueue(T item){
+    public void enqueue(Item item){
 
         if (item == null) {
             throw new IllegalArgumentException("Cannot add a null element.");
@@ -47,14 +47,14 @@ public class RandomizedQueue<T> implements Iterable<T> {
     }
 
     // remove and return a random item
-    public T dequeue(){
+    public Item dequeue(){
 
         if (this.isEmpty()) {
             throw new java.util.NoSuchElementException("Cannot remove from an empty queue");
         }
 
         int pos = StdRandom.uniform(this.head, this.tail + 1);
-        T item = null;
+        Item item = null;
         if (pos == this.head) {
             item = this.items[pos];
             this.items[this.head] = null;
@@ -78,7 +78,7 @@ public class RandomizedQueue<T> implements Iterable<T> {
     }
 
     // return a random item (but do not remove it)
-    public T sample(){
+    public Item sample(){
 
         if (this.isEmpty()) {
             throw new java.util.NoSuchElementException("Cannot sample from an empty queue");
@@ -94,28 +94,28 @@ public class RandomizedQueue<T> implements Iterable<T> {
     }
 
     // return an independent iterator over items in random order
-    public Iterator<T> iterator(){
+    public Iterator<Item> iterator(){
         return new RQIterator();
     }
 
-    private class RQIterator implements Iterator<T> {
+    private class RQIterator implements Iterator<Item> {
 
         private boolean[] visited;
-        private T[] copy;
+        private Item[] copy;
 
         public RQIterator() {
             this.visited = new boolean[size];
             for (int i = 0; i < this.visited.length; i++) {
                 this.visited[i] = false;
             }
-            this.copy = (T[])new Object[size];
+            this.copy = (Item[])new Object[size];
             int head0 = head;
             int copied = 0;
             for (int i = 0; copied < size; i++) {
                 while(items[head0] == null) {
                     head0++;
                 }
-                T item = items[head0];
+                Item item = items[head0];
                 copy[i] = item;
                 copied++;
                 head0++;
@@ -133,7 +133,7 @@ public class RandomizedQueue<T> implements Iterable<T> {
         }
 
         @Override
-        public T next() {
+        public Item next() {
             if (!this.hasNext()) {
                 throw new java.util.NoSuchElementException("There's no 'next' element");
             }
@@ -142,7 +142,7 @@ public class RandomizedQueue<T> implements Iterable<T> {
             while (visited[pos]) {
                 pos = StdRandom.uniform(0, copy.length);
             }
-            T item = copy[pos];
+            Item item = copy[pos];
             visited[pos] = true;
             return item;
         }
@@ -154,14 +154,14 @@ public class RandomizedQueue<T> implements Iterable<T> {
     }
 
     private void resize(int capacity) {
-        T[] copy = (T[])new Object[capacity];
+        Item[] copy = (Item[])new Object[capacity];
         int head = this.head;
         int copied = 0;
         for (int i = 0; copied < this.size; i++) {
             while(this.items[head] == null) {
                 head++;
             }
-            T item = this.items[head];
+            Item item = this.items[head];
             copy[i] = item;
             copied++;
             head++;
