@@ -9,7 +9,7 @@ public class Deque<Item> implements Iterable<Item> {
     private int size;
 
     // construct an empty deque
-    public Deque(){
+    public Deque() {
         this.head = null;
         this.tail = null;
         this.size = 0;
@@ -22,17 +22,17 @@ public class Deque<Item> implements Iterable<Item> {
     }
 
     // is the deque empty?
-    public boolean isEmpty(){
+    public boolean isEmpty() {
         return this.head == null;
     }
 
     // return the number of items on the deque
-    public int size(){
+    public int size() {
         return this.size;
     }
 
     // add the item to the front
-    public void addFirst(Item item){
+    public void addFirst(Item item) {
 
         if (item == null) {
             throw new IllegalArgumentException("Cannot add a null element.");
@@ -56,7 +56,7 @@ public class Deque<Item> implements Iterable<Item> {
     }
 
     // add the item to the back
-    public void addLast(Item item){
+    public void addLast(Item item) {
 
         if (item == null) {
             throw new IllegalArgumentException("Cannot add a null element.");
@@ -80,7 +80,7 @@ public class Deque<Item> implements Iterable<Item> {
     }
 
     // remove and return the item from the front
-    public Item removeFirst(){
+    public Item removeFirst() {
 
         if (size > 0) {
             Item item = this.head.item;
@@ -100,7 +100,7 @@ public class Deque<Item> implements Iterable<Item> {
     }
 
     // remove and return the item from the back
-    public Item removeLast(){
+    public Item removeLast() {
         if (size > 0) {
             Item item = this.tail.item;
             this.tail = this.tail.previous;
@@ -119,10 +119,10 @@ public class Deque<Item> implements Iterable<Item> {
     }
 
     // return an iterator over items in order from front to back
-    public Iterator<Item> iterator(){
-        return new Iterator<Item>() {
-
+    public Iterator<Item> iterator() {
+        return new Iterator<>() {
             private Node current = head;
+
             @Override
             public boolean hasNext() {
                 return current != null;
@@ -130,18 +130,16 @@ public class Deque<Item> implements Iterable<Item> {
 
             @Override
             public Item next() {
-
                 if (!this.hasNext()) {
-                    throw  new java.util.NoSuchElementException("There's no 'next' element");
+                    throw new java.util.NoSuchElementException("There's no 'next' element");
                 }
-
                 Item item = current.item;
                 current = current.next;
                 return item;
             }
 
             @Override
-            public void remove(){
+            public void remove() {
                 throw new UnsupportedOperationException("Not supported.");
             }
         };

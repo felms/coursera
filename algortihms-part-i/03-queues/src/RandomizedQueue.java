@@ -12,26 +12,26 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     private int tail;
 
     // construct an empty randomized queue
-    public RandomizedQueue(){
+    public RandomizedQueue() {
         this.capacity = 1;
-        this.items = (Item[])new Object[capacity];
+        this.items = (Item[]) new Object[capacity];
         this.size = 0;
         this.head = 0;
         this.tail = 0;
     }
 
     // is the randomized queue empty?
-    public boolean isEmpty(){
+    public boolean isEmpty() {
         return this.size == 0;
     }
 
     // return the number of items on the randomized queue
-    public int size(){
+    public int size() {
         return this.size;
     }
 
     // add the item
-    public void enqueue(Item item){
+    public void enqueue(Item item) {
 
         if (item == null) {
             throw new IllegalArgumentException("Cannot add a null element.");
@@ -47,7 +47,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     }
 
     // remove and return a random item
-    public Item dequeue(){
+    public Item dequeue() {
 
         if (this.isEmpty()) {
             throw new java.util.NoSuchElementException("Cannot remove from an empty queue");
@@ -65,7 +65,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
             this.tail--;
         } else {
             while (this.items[pos] == null) {
-                pos ++;
+                pos++;
             }
             item = this.items[pos];
             this.items[pos] = null;
@@ -78,7 +78,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     }
 
     // return a random item (but do not remove it)
-    public Item sample(){
+    public Item sample() {
 
         if (this.isEmpty()) {
             throw new java.util.NoSuchElementException("Cannot sample from an empty queue");
@@ -87,36 +87,36 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         int pos = StdRandom.uniform(this.head, this.tail + 1);
 
         while (this.items[pos] == null) {
-            pos ++;
+            pos++;
         }
 
         return this.items[pos];
     }
 
     // return an independent iterator over items in random order
-    public Iterator<Item> iterator(){
+    public Iterator<Item> iterator() {
         return new RQIterator();
     }
 
     private class RQIterator implements Iterator<Item> {
 
-        private boolean[] visited;
-        private Item[] copy;
+        private final boolean[] visited;
+        private final Item[] copy;
 
         public RQIterator() {
             this.visited = new boolean[size];
             for (int i = 0; i < this.visited.length; i++) {
                 this.visited[i] = false;
             }
-            this.copy = (Item[])new Object[size];
-            int head0 = head;
+            this.copy = (Item[]) new Object[size];
+            int head0 = 0;
             int copied = 0;
-            for (int i = 0; copied < size; i++) {
-                while(items[head0] == null) {
+            while (copied < size) {
+                while (items[head0] == null) {
                     head0++;
                 }
                 Item item = items[head0];
-                copy[i] = item;
+                copy[copied] = item;
                 copied++;
                 head0++;
             }
@@ -153,27 +153,27 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         }
     }
 
-    private void resize(int capacity) {
-        Item[] copy = (Item[])new Object[capacity];
-        int head = this.head;
+    private void resize(int newCapacity) {
+        Item[] copy = (Item[]) new Object[newCapacity];
+        int currentHead = 0;
         int copied = 0;
-        for (int i = 0; copied < this.size; i++) {
-            while(this.items[head] == null) {
-                head++;
+        while (copied < this.size) {
+            while (this.items[currentHead] == null) {
+                currentHead++;
             }
-            Item item = this.items[head];
-            copy[i] = item;
+            Item item = this.items[currentHead];
+            copy[copied] = item;
             copied++;
-            head++;
+            currentHead++;
         }
         this.head = 0;
         this.tail = this.size - 1;
         this.items = copy;
-        this.capacity = capacity;
+        this.capacity = newCapacity;
     }
 
     // unit testing (required)
-    public static void main(String[] args){
+    public static void main(String[] args) {
         // Testing isEmpty, size and enqueue
         RandomizedQueue<String> stringRandomizedQueue = new RandomizedQueue<>();
         StdOut.println("Is empty: " + stringRandomizedQueue.isEmpty());
