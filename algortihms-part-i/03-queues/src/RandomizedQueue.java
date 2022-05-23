@@ -65,7 +65,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
             this.tail--;
         } else {
             while (this.items[pos] == null) {
-                pos++;
+                pos = StdRandom.uniform(this.head, this.tail + 1);
             }
             item = this.items[pos];
             this.items[pos] = null;
@@ -87,7 +87,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         int pos = StdRandom.uniform(this.head, this.tail + 1);
 
         while (this.items[pos] == null) {
-            pos++;
+            pos = StdRandom.uniform(this.head, this.tail + 1);
         }
 
         return this.items[pos];
@@ -112,7 +112,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
             int head0 = 0;
             int copied = 0;
             while (copied < size) {
-                while (items[head0] == null) {
+                while (head0< items.length && items[head0] == null) {
                     head0++;
                 }
                 Item item = items[head0];
@@ -158,7 +158,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         int currentHead = 0;
         int copied = 0;
         while (copied < this.size) {
-            while (this.items[currentHead] == null) {
+            while (currentHead < this.items.length && this.items[currentHead] == null) {
                 currentHead++;
             }
             Item item = this.items[currentHead];
