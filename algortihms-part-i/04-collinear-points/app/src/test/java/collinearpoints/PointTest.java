@@ -84,4 +84,14 @@ class PointTest {
         assertEquals(Double.NEGATIVE_INFINITY, a.slopeTo(b));
     }
 
+    @Test
+    void testTwoSlopes() {
+        Point a = new Point(-1, 1);
+        Point b = new Point(3, 9);
+        Point c = new Point(-3, -3);
+        Point d = new Point(1, 5);
+
+        assertEquals(c.slopeTo(d), a.slopeTo(b));
+    }
+
 }
