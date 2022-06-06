@@ -7,6 +7,7 @@ public class BruteCollinearPoints {
     private final Point[] points;
     private final LineSegment[] lineSegments;
     private int numberOfSegments;
+    private final Point[][] usedSegments;
 
     public BruteCollinearPoints(Point[] points) {   // finds all line segments containing 4 points
 
@@ -16,6 +17,7 @@ public class BruteCollinearPoints {
 
         int n = points.length;
         this.points = new Point[n];
+        this.usedSegments = new Point[n][];
 
         for (int i = 0; i < n; i++) {
             if (points[i] == null) {
@@ -23,6 +25,7 @@ public class BruteCollinearPoints {
             }
 
             this.points[i] = points[i];
+            this.usedSegments[i] = new Point[2];
         }
 
         Arrays.sort(this.points);
@@ -67,20 +70,19 @@ public class BruteCollinearPoints {
                     }
                 }
 
-                Arrays.sort(remainingPoints, p.slopeOrder());                
+                Arrays.sort(remainingPoints, p.slopeOrder());
 
-                for (int rpCounter = 0; rpCounter < remainingPoints.length; rpCounter++) {
+                for (Point point : remainingPoints) {
                     Point[] segmentPoints = new Point[localPoints.length];
-                    double slope = p.slopeTo(remainingPoints[rpCounter]);
+                    double slope = p.slopeTo(point);
                     segmentPoints[0] = p;
                     int addedPoints = 1;
-                    for (int k = 0; k < remainingPoints.length; k++) {
-                        if (p.slopeTo(remainingPoints[k]) == slope) {
-                            
-                        segmentPoints[addedPoints] = remainingPoints[k];
-                        addedPoints++;
+                    for (Point remainingPoint : remainingPoints) {
+                        if (p.slopeTo(remainingPoint) == slope) {
+                            segmentPoints[addedPoints] = remainingPoint;
+                            addedPoints++;
                         }
-                    }                
+                    }
 
                     if (addedPoints >= 4) {
 
@@ -93,17 +95,21 @@ public class BruteCollinearPoints {
                         }
 
                         Arrays.sort(segmentPoints);
-                        LineSegment ls = new LineSegment(segmentPoints[0], segmentPoints[segmentPoints.length - 1]);
+                        Point segStart = segmentPoints[0];
+                        Point segEnd = segmentPoints[segmentPoints.length - 1];
                         boolean segmentUsed = false;
                         for (int ns = 0; ns < this.numberOfSegments; ns++) {
-                            LineSegment line = lineSegments1[ns];
-                            if (line.toString().equals(ls.toString())) {
+                            Point[] testedSeg = this.usedSegments[ns];
+                            if (testedSeg[0].compareTo(segStart) == 0
+                                    && testedSeg[1].compareTo(segEnd) == 0) {
                                 segmentUsed = true;
+                                break;
                             }
                         }
 
                         if (!segmentUsed) {
-                            lineSegments1[this.numberOfSegments] = ls;
+                            lineSegments1[this.numberOfSegments] = new LineSegment(segStart, segEnd);
+                            this.usedSegments[this.numberOfSegments] = new Point[]{segStart, segEnd};
                             this.numberOfSegments++;
                         }
                     }
