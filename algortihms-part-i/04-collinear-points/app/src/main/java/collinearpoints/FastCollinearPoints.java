@@ -6,6 +6,7 @@ public class FastCollinearPoints {
     private int numberOfSegments;
     private final LineSegment[] lineSegments;
     private final Point[] points;
+    private final Point[][] usedSegments;
 
     public FastCollinearPoints(Point[] points) { // finds all line segments containing 4 or more points
         if (points == null) {
@@ -14,6 +15,7 @@ public class FastCollinearPoints {
 
         int n = points.length;
         this.points = new Point[n];
+        this.usedSegments = new Point[n * 10][];
 
         for (int i = 0; i < n; i++) {
             if (points[i] == null) {
@@ -21,6 +23,7 @@ public class FastCollinearPoints {
             }
 
             this.points[i] = points[i];
+            this.usedSegments[i] = new Point[2];
         }
 
         Arrays.sort(this.points);
@@ -49,59 +52,70 @@ public class FastCollinearPoints {
 
     private LineSegment[] processSegments() {
 
-        LineSegment[] lineSegments1 = new LineSegment[this.points.length];
+        LineSegment[] lineSegments1 = new LineSegment[this.points.length * 10];
 
         for (int i = 0; i < this.points.length; i++) {
             Point p = this.points[i];
 
             Point[] remainingPoints = new Point[this.points.length - 1];
-            int counter = 0;
+            int countRemaining = 0;
             for (int j = 0; j < this.points.length; j++) {
-                if (j != i) {
-                    remainingPoints[counter] = this.points[j];
-                    counter++;
+                if (i != j) {
+                    remainingPoints[countRemaining] = this.points[j];
+                    countRemaining++;
                 }
             }
 
             Arrays.sort(remainingPoints, p.slopeOrder());
-            int counterP = 0;
-            int segCounter = 0;
-            Point[] seg = new Point[this.points.length];
-            double slope = p.slopeTo(remainingPoints[0]);
-            double currentSlope = 0;
-            do {
-                currentSlope = p.slopeTo(remainingPoints[counterP]);
-                if (currentSlope == slope) {
-                    seg[segCounter] = remainingPoints[counterP];
-                    segCounter++;
-                }
-                counterP++;
-            } while (slope == currentSlope && counterP < remainingPoints.length);
-            Point[] collectedPoints = new Point[segCounter + 1];
-            for (int s = 0; s < segCounter; s++) {
-                collectedPoints[s] = seg[s];
-            }
-            collectedPoints[segCounter] = p;
 
-            if (collectedPoints.length >= 4) {
-                Arrays.sort(collectedPoints);
-                LineSegment ls = new LineSegment(collectedPoints[0], collectedPoints[segCounter]);
+            for (Point remainingPoint : remainingPoints) {
+                double slope = p.slopeTo(remainingPoint);
 
+                Point[] sPoints = new Point[this.points.length];
+                int countSlopePoints = 0;
 
-                boolean segmentUsed = false;
-                if (this.numberOfSegments > 0) {
-                    for (int ns = 0; ns < this.numberOfSegments; ns++) {
-                        LineSegment line = lineSegments1[ns];
-                        if (line.toString().equals(ls.toString())) {
-                            segmentUsed = true;
-                        }
+                for (Point q : remainingPoints) {
+                    if (p.slopeTo(q) == slope) {
+                        sPoints[countSlopePoints] = q;
+                        countSlopePoints++;
                     }
                 }
 
-                if (!segmentUsed) {
-                    lineSegments1[this.numberOfSegments] = ls;
-                    this.numberOfSegments++;
+                sPoints[countSlopePoints++] = p;
+
+                if (countSlopePoints >= 4) {
+                    if (countSlopePoints < this.points.length) {
+                        Point[] aux = new Point[countSlopePoints];
+                        for (int k = 0; k < countSlopePoints; k++) {
+                            aux[k] = sPoints[k];
+                        }
+                        sPoints = aux;
+                    }
+
+                    Arrays.sort(sPoints);
+
+                    Point segStart = sPoints[0];
+                    Point segEnd = sPoints[sPoints.length - 1];
+
+                    boolean usedSegment = false;
+                    for (int nos = 0; nos < numberOfSegments; nos++) {
+                        Point[] testedSeg = this.usedSegments[nos];
+                        if (testedSeg[0].compareTo(segStart) == 0
+                                && testedSeg[1].compareTo(segEnd) == 0) {
+                            usedSegment = true;
+                            break;
+                        }
+
+                    }
+
+                    if (!usedSegment) {
+                        lineSegments1[this.numberOfSegments] = new LineSegment(segStart, segEnd);
+                        usedSegments[this.numberOfSegments] = new Point[]{segStart, segEnd};
+                        this.numberOfSegments++;
+                    }
+
                 }
+
             }
 
         }
