@@ -6,7 +6,7 @@ public class FastCollinearPoints {
     private int numberOfSegments;
     private final LineSegment[] lineSegments;
     private final Point[] points;
-    private final Point[][] usedSegments;
+    private Point[][] usedSegments;
 
     public FastCollinearPoints(Point[] points) { // finds all line segments containing 4 or more points
         if (points == null) {
@@ -15,7 +15,7 @@ public class FastCollinearPoints {
 
         int n = points.length;
         this.points = new Point[n];
-        this.usedSegments = new Point[n * 10][];
+        this.usedSegments = new Point[n][];
 
         for (int i = 0; i < n; i++) {
             if (points[i] == null) {
@@ -52,7 +52,7 @@ public class FastCollinearPoints {
 
     private LineSegment[] processSegments() {
 
-        LineSegment[] lineSegments1 = new LineSegment[this.points.length * 10];
+        LineSegment[] lineSegments1 = new LineSegment[this.points.length];
 
         for (int i = 0; i < this.points.length; i++) {
             Point p = this.points[i];
@@ -109,6 +109,23 @@ public class FastCollinearPoints {
                     }
 
                     if (!usedSegment) {
+
+                        if (this.numberOfSegments == lineSegments1.length) {
+                            LineSegment[] aux = new LineSegment[lineSegments1.length * 2];
+                            for (int ax = 0; ax < lineSegments1.length; ax++) {
+                                aux[ax] = lineSegments1[ax];
+                            }
+                            lineSegments1 = aux;
+                        }
+
+                        if (this.numberOfSegments == this.usedSegments.length) {
+                            Point[][] aux = new Point[this.usedSegments.length * 2][];
+                            for (int ax = 0; ax < this.usedSegments.length; ax++) {
+                                aux[ax] = usedSegments[ax];
+                            }
+                            this.usedSegments = aux;
+                        }
+
                         lineSegments1[this.numberOfSegments] = new LineSegment(segStart, segEnd);
                         usedSegments[this.numberOfSegments] = new Point[]{segStart, segEnd};
                         this.numberOfSegments++;
