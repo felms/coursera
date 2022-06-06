@@ -56,47 +56,59 @@ public class BruteCollinearPoints {
 
         if (numberOfPoints >= 4) {
             Point[] localPoints = this.points.clone();
-            while (localPoints.length >= 4) {
-                Point p = localPoints[0];
+            
+            for (int selectedPoint = 0; selectedPoint < localPoints.length; selectedPoint++) {
+                Point p = localPoints[selectedPoint];
                 Point[] remainingPoints = new Point[localPoints.length - 1];
                 int countR = 0;
-                for (int j = 1; j < localPoints.length; j++) {
-                    remainingPoints[countR++] = localPoints[j];
+                for (int j = 0; j < localPoints.length; j++) {
+                    if (j != selectedPoint) {
+                        remainingPoints[countR++] = localPoints[j];
+                    }
                 }
 
-                Arrays.sort(remainingPoints, p.slopeOrder());
-                Point[] segmentPoints = new Point[4];
-                double slope = p.slopeTo(remainingPoints[0]);
-                segmentPoints[0] = p;
-                int addedPoints = 1;
-                int k = 0;
-                while (addedPoints < 4 && k < remainingPoints.length) {
+                Arrays.sort(remainingPoints, p.slopeOrder());                
 
-                    if (p.slopeTo(remainingPoints[k]) == slope) {
+                for (int rpCounter = 0; rpCounter < remainingPoints.length; rpCounter++) {
+                    Point[] segmentPoints = new Point[localPoints.length];
+                    double slope = p.slopeTo(remainingPoints[rpCounter]);
+                    segmentPoints[0] = p;
+                    int addedPoints = 1;
+                    for (int k = 0; k < remainingPoints.length; k++) {
+                        if (p.slopeTo(remainingPoints[k]) == slope) {
+                            
                         segmentPoints[addedPoints] = remainingPoints[k];
                         addedPoints++;
-                    }
+                        }
+                    }                
 
-                    k++;
-                }
+                    if (addedPoints >= 4) {
 
-                if (addedPoints >= 4) {
-                    Arrays.sort(segmentPoints);
-                    LineSegment ls = new LineSegment(segmentPoints[0], segmentPoints[3]);
-                    boolean segmentUsed = false;
-                    for (int ns = 0; ns < this.numberOfSegments; ns++) {
-                        LineSegment line = lineSegments1[ns];
-                        if (line.toString().equals(ls.toString())) {
-                            segmentUsed = true;
+                        if (addedPoints < segmentPoints.length) {
+                            Point[] aux = new Point[addedPoints];
+                            for (int i = 0; i < addedPoints; i++) {
+                                aux[i] = segmentPoints[i];
+                            }
+                            segmentPoints = aux;
+                        }
+
+                        Arrays.sort(segmentPoints);
+                        LineSegment ls = new LineSegment(segmentPoints[0], segmentPoints[segmentPoints.length - 1]);
+                        boolean segmentUsed = false;
+                        for (int ns = 0; ns < this.numberOfSegments; ns++) {
+                            LineSegment line = lineSegments1[ns];
+                            if (line.toString().equals(ls.toString())) {
+                                segmentUsed = true;
+                            }
+                        }
+
+                        if (!segmentUsed) {
+                            lineSegments1[this.numberOfSegments] = ls;
+                            this.numberOfSegments++;
                         }
                     }
-
-                    if (!segmentUsed) {
-                        lineSegments1[this.numberOfSegments] = ls;
-                        this.numberOfSegments++;
-                    }
                 }
-                localPoints = remainingPoints.clone();
+                
             }
 
         }
