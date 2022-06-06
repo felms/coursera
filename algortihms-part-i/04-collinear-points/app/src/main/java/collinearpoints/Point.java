@@ -108,20 +108,10 @@ public class Point implements Comparable<Point> {
             }
 
             double sp1 = Point.this.slopeTo(p1);
-            if (sp1 == Double.POSITIVE_INFINITY || sp1 == +0.0) {
-                sp1 -= p1.y;
-            } else if (sp1 == Double.NEGATIVE_INFINITY) {
-                sp1 += p1.y;
-            }
 
             double sp2 = Point.this.slopeTo(p2);
-            if (sp2 == Double.POSITIVE_INFINITY || sp2 == +0.0) {
-                sp2 -= p2.y;
-            } else if (sp2 == Double.NEGATIVE_INFINITY) {
-                sp2 += p2.y;
-            }
 
-            return (int) (sp1 - sp2);
+            return sp1 < sp2 ? -1 : sp1 > sp2 ? 1 : 0;
         }
     }
 
